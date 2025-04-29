@@ -1,0 +1,37 @@
+.
+(0tqq (Bapp
+(0x   tqq (Balembic
+(0x   tqq (Bapi
+(0x   x   mqq (Bv1
+(0x   x       tqq (Bapi.py
+(0x   x       tqq (Bendpoints
+(0x   x       x   tqq (B__init__.py
+(0x   x       x   mqq (Bscraping.py
+(0x   x       mqq (B__init__.py
+(0x   tqq (Bcore
+(0x   x   mqq (Bexceptions.py
+(0x   tqq (Bcrud
+(0x   x   mqq (Bscraping.py
+(0x   tqq (Bdb
+(0x   x   tqq (Bbase.py
+(0x   x   mqq (Bsession.py
+(0x   tqq (Bmain.py
+(0x   tqq (Bmodels
+(0x   x   mqq (Bscraping.py
+(0x   tqq (Bschemas
+(0x   x   mqq (Bscraping.py
+(0x   tqq (Bscraping
+(0x   x   mqq (Bbs4_scraper.py
+(0x   mqq (Btests
+(0tqq (Bcomandos.txt
+(0tqq (Bcreate_db.py
+(0tqq (Bembrapa.db
+(0tqq (Bembrapa_endpoint.txt
+(0tqq (Bestrutura.txt
+(0tqq (Bestutura_projeto.txt
+(0tqq (Bpoetry.lock
+(0tqq (Bpyproject.toml
+(0tqq (BREADME.md
+(0mqq (Brequirements.txt
+
+13 directories, 22 files

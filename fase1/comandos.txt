@@ -1,0 +1,8 @@
+
+poetry init --name "pos_tec_mle_fase1" --dependency fastapi --dependency uvicorn --python "^3.12" --no-interaction
+
+#Cria DB, sempre que houver mudanca no SQLite
+poetry run python create_db.py
+
+#roda o projeto no diretorio: Fase1
+uvicorn app.main:app --reload --port 8080

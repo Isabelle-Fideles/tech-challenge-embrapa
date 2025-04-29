@@ -1,0 +1,53 @@
+# Bytecode Python
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Ambiente virtual (se dentro do projeto)
+.venv/
+venv/
+ENV/
+
+# Arquivos de log
+*.log
+
+# Configurações de ambiente
+.env
+
+# Configurações de IDE/editor
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# Arquivos do sistema operacional
+.DS_Store
+Thumbs.db
+
+# Alembic - versões de migração (opcional, se não quiser versionar)
+# alembic/versions/
+
+# Banco de dados local (caso tenha SQLite)
+*.sqlite3
+
+# Dependências geradas automaticamente
+poetry.lock
+Pipfile.lock
+
+# Cache de pytest
+.pytest_cache/
+
+# Diretórios de testes que podem gerar resultados temporários
+htmlcov/
+.tox/
+coverage.xml
+*.cover
+.hypothesis/
+
+# Scraping - se gerar arquivos de cache temporários
+scraping/cache/
+scraping/__pycache__/
+
+# Outros possíveis
+*.bak
+*.tmp
