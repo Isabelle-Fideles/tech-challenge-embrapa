@@ -1,28 +1,25 @@
 from pydantic import BaseModel, Field
 from typing import Optional, List,Literal
 
-# ========== Modelo de Entrada (Request) Producao ==========
+# PRODUCAO
 class EmbrapaScrapingRequestProducao(BaseModel):
     opcao: Literal["opt_02"] = Field(
         description="Opção fixa para Produção de vinhos, sucos e derivados do Rio Grande do Sul."
     )
     ano: Optional[int] = Field(
         default=None,
-        ge=1976,
-        le=2023,
-        description="Ano desejado (entre 1976 e 2023). Se não informado, traz o mais atual disponível."
+        ge=1970,
+        le=2024,
+        description="Ano desejado (entre 1970 e 2024). Se não informado, traz o mais atual disponível."
     )
-    # subopcao: Optional[str] = Field(
-    #     default=None,
-    #     description="Subopção específica (opcional). Normalmente não utilizada para Produção."
-    # )
+   
 
     model_config = {
         "json_schema_extra": {
             "examples": [
                 {
                     "opcao": "opt_02",
-                    "ano": 2023,
+                    "ano": 2024,
                     "subopcao": None
                 },
                 {
@@ -35,16 +32,16 @@ class EmbrapaScrapingRequestProducao(BaseModel):
     }
 
 
-# ========== Modelo de Entrada (Request) Processamento ==========
+# PROCESSAMENTO
 class EmbrapaScrapingRequestProcessamento(BaseModel):
     opcao: Literal["opt_03"] = Field(
         description="Opção fixa para Processamento de uvas viníferas, americanas e híbridas."
     )
-    ano: Optional[int] = Field(
+    ano:int = Field(
         default=None,
-        ge=1976,
-        le=2023,
-        description="Ano desejado (entre 1976 e 2023)."
+        ge=1970,
+        le=2024,
+        description="Ano desejado (entre 1970 e 2024)."
     )
     subopcao: Optional[Literal["subopt_01", "subopt_02", "subopt_03", "subopt_04"]] = Field(
         default="subopt_01",
@@ -56,13 +53,69 @@ class EmbrapaScrapingRequestProcessamento(BaseModel):
             "examples": [
                 {
                     "opcao": "opt_03",
-                    "ano": 2023,
+                    "ano": 2024,
                     "subopcao": "subopt_01"
                 }
             ]
         }
     }
 
+
+# COMERCIALIZAÇÃO
+class EmbrapaScrapingRequestComercializacao(BaseModel):
+    opcao: Literal["opt_04"] = Field(
+        description="Opção fixa para Comercialização de vinhos e derivados."
+    )
+    ano: Optional[int] = Field(
+        default=None, ge=1970, le=2024,
+        description="Ano desejado (entre 1970 e 2024). Se não informado, traz o mais atual."
+    )
+
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "opcao": "opt_04", 
+                    "ano": 2024,
+                    "subopcao": None
+                }
+            ]
+        }
+    }
+
+# IMPORTAÇÃO
+class EmbrapaScrapingRequestImportacao(BaseModel):
+    opcao: Literal["opt_05"] = Field(description="Opção fixa para Importação.")
+    ano: int = Field(ge=1970, le=2024)
+    subopcao: Literal["subopt_01", "subopt_02", "subopt_03", "subopt_04", "subopt_05"]
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "opcao": "opt_05", 
+                    "ano": 2024,
+                    "subopcao": "subopt_01"
+                }
+            ]
+        }
+    }
+
+# EXPORTAÇÃO
+class EmbrapaScrapingRequestExportacao(BaseModel):
+    opcao: Literal["opt_06"] = Field(description="Opção fixa para Exportação.")
+    ano: int = Field(ge=1970, le=2024)
+    subopcao: Literal["subopt_01", "subopt_02", "subopt_03", "subopt_04"]
+    model_config = {
+        "json_schema_extra": {
+            "examples": [
+                {
+                    "opcao": "opt_06", 
+                    "ano": 2024,
+                    "subopcao": "subopt_01"
+                }
+            ]
+        }
+    }
     
 # ========== Modelos de Saída (Response) ==========
 class ProdutoItem(BaseModel):
@@ -86,7 +139,7 @@ class EmbrapaScrapingResponse(BaseModel):
         "json_schema_extra": {
             "examples": [
                 {
-                    "source_url": "http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_02&ano=2023",
+                    "source_url": "http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_02&ano=2024",
                     "records_count": 3,
                     "data": {
                         "categorias": [

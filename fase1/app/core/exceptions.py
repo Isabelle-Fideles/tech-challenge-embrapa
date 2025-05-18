@@ -1,11 +1,9 @@
-from fastapi import HTTPException
+class EmbrapaDataNotFoundException(Exception):
+    def __init__(self, message="Nenhuma tabela encontrada para os parâmetros informados."):
+        self.message = message
+        super().__init__(self.message)
 
-class EmbrapaDataNotFoundException(HTTPException):
-    def __init__(self):
-        super().__init__(
-            status_code=404,
-            detail={
-                "error_code": "DATA_NOT_FOUND",
-                "error_message": "Nenhuma tabela encontrada para o ano e opção informados."
-            }
-        )
+class ExternalServiceUnavailableException(Exception):
+    def __init__(self, message="Serviço externo (Embrapa) está indisponível no momento."):
+        self.message = message
+        super().__init__(self.message)

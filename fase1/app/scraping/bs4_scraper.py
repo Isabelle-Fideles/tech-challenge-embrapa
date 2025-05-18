@@ -2,9 +2,10 @@ import requests
 from bs4 import BeautifulSoup
 from typing import Any, Optional, List, Dict
 from functools import lru_cache
-from app.core.exceptions import EmbrapaDataNotFoundException
+from app.core.exceptions import EmbrapaDataNotFoundException, ExternalServiceUnavailableException
 
 BASE_URL = "http://vitibrasil.cnpuv.embrapa.br/index.php"
+
 
 def build_embrapa_url(opcao: str, ano: Optional[int] = None, subopcao: Optional[str] = None) -> str:
     params = f"?opcao={opcao}"
@@ -19,8 +20,8 @@ def fetch_page_content(url: str) -> str:
         response = requests.get(url, timeout=10)
         response.raise_for_status()
         return response.content
-    except requests.RequestException as e:
-        raise RuntimeError(f"Erro ao acessar {url}: {str(e)}") from e
+    except requests.RequestException:
+        raise ExternalServiceUnavailableException()
 
 def parse_table(html_content: str) -> Dict[str, Any]:
     soup = BeautifulSoup(html_content, "html.parser")
@@ -66,7 +67,7 @@ def parse_table(html_content: str) -> Dict[str, Any]:
         "categorias": grouped_data,
         "total_litros": total_geral
     }
-
+    
 def parse_import_export_table(html_content: str) -> Dict[str, Any]:
     soup = BeautifulSoup(html_content, "html.parser")
     table = soup.find("table", class_="tb_base tb_dados")
@@ -80,8 +81,11 @@ def parse_import_export_table(html_content: str) -> Dict[str, Any]:
         cells = row.find_all("td")
         if len(cells) == 3:
             pais = cells[0].text.strip()
-            quantidade = cells[1].text.strip()
-            valor = cells[2].text.strip()
+            quantidade_raw = cells[1].text.strip()
+            valor_raw = cells[2].text.strip()
+
+            quantidade = None if quantidade_raw == "-" else quantidade_raw.replace(".", "").replace(",", "")
+            valor = None if valor_raw == "-" else valor_raw.replace(".", "").replace(",", "")
 
             data.append({
                 "pais": pais,
@@ -90,15 +94,17 @@ def parse_import_export_table(html_content: str) -> Dict[str, Any]:
             })
 
     # Total
-    tfoot = table.find("tfoot", class_="tb_total")
     total_kg = total_usd = None
+    tfoot = table.find("tfoot", class_="tb_total")
     if tfoot:
         total_row = tfoot.find("tr")
         if total_row:
             total_cells = total_row.find_all("td")
             if len(total_cells) == 3:
-                total_kg = total_cells[1].text.strip()
-                total_usd = total_cells[2].text.strip()
+                total_kg_raw = total_cells[1].text.strip()
+                total_usd_raw = total_cells[2].text.strip()
+                total_kg = total_kg_raw.replace(".", "").replace(",", "") if total_kg_raw != "-" else None
+                total_usd = total_usd_raw.replace(".", "").replace(",", "") if total_usd_raw != "-" else None
 
     return {
         "itens": data,
@@ -118,9 +124,11 @@ def scrape_embrapa(opcao: str, ano: Optional[int] = None, subopcao: Optional[str
     
     if not parsed_data.get("categorias") and not parsed_data.get("itens"):
         raise EmbrapaDataNotFoundException()
+    
+    records_count = len(parsed_data.get("categorias") or parsed_data.get("itens") or [])
 
     return {
         "source_url": url,
-        "records_count": len(parsed_data.get("categorias", parsed_data.get("itens", []))),
+        "records_count": records_count,
         "data": parsed_data
     }

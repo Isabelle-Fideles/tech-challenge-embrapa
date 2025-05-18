@@ -8,8 +8,9 @@ scraping_router = APIRouter(
     prefix="/embrapa",
     tags=["Embrapa"],
     responses={
-        404: {"description": "Recurso não encontrado"},
-        500: {"description": "Erro interno no servidor"}
+        404: {"description": "Dados não encontrados para os parâmetros fornecidos."},
+        500: {"description": "Erro interno inesperado na aplicação."},
+        503: {"description": "Serviço externo (Embrapa) está indisponível no momento."}
     }
 )
 
