@@ -1,6 +1,6 @@
 import requests
 from bs4 import BeautifulSoup
-from typing import Any, Optional, List, Dict
+from typing import Any, Optional, Dict
 from functools import lru_cache
 from app.core.exceptions import EmbrapaDataNotFoundException, ExternalServiceUnavailableException
 

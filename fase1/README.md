@@ -1,5 +1,22 @@
 # Projeto: API Embrapa Uva e Vinho - POS Tech MLE
 
+## 🔗 Sumário
+- [📝 Descrição](#-descrição)
+- [🛠️ Tecnologias](#-tecnologias)
+- [🗂️ Estrutura do Projeto](#-estrutura-do-projeto)
+- [⚙️ Instalação e Execução](#-instalação-e-execução)
+- [🔐 Autenticação](#-autenticação)
+- [🧪 Testes](#-testes)
+- [🔁 Fluxo de Funcionamento](#-fluxo-de-funcionamento)
+- [🗺️ Fluxo Detalhado da API](#-fluxo-detalhado-da-api)
+- [🗺️ Arquitetura da API](#-arquitetura-da-api-embrapa-fluxo-completo)
+- [📊 Machine Learning](#-cenário-de-aplicação-em-machine-learning)
+- [🚀 Deploy (MVP)](#-plano-de-deploy-mvp)
+- [🔗 Rotas](#-rotas-disponíveis)
+- [📄 Licença](#-licença)
+
+
+
 ## 📝 Descrição
 API para coleta estruturada de dados públicos da Embrapa, focando nas abas de:
 - Produção
@@ -32,10 +49,10 @@ Estrutura modular baseada em boas práticas de FastAPI e princípios de Clean Ar
 ```
 📦 API Embrapa - POS Tech MLE
 ├── 📁 app
-│   ├── 📁 alembic                  # Migrations do banco de dados
+│   ├── 📁 alembic                 # Migrations do banco de dados
 │   │   └── __init__.py
-│   ├── 📁 api                      # Camada de API
-│   │   └── 📁 v1                   # Versão da API
+│   ├── 📁 api                     # Camada de API
+│   │   └── 📁 v1                  # Versão da API
 │   │       ├── api.py             # Roteador principal
 │   │       ├── 📁 docs            # Documentação e responses
 │   │       │   ├── embrapa.py
@@ -44,12 +61,12 @@ Estrutura modular baseada em boas práticas de FastAPI e princípios de Clean Ar
 │   │       │   ├── __init__.py
 │   │       │   └── scraping.py
 │   │       └── __init__.py
-│   ├── 📁 core                     # Configurações e segurança
+│   ├── 📁 core                    # Configurações e segurança
 │   │   ├── exceptions.py
 │   │   ├── __init__.py
 │   │   ├── 📁 middleware
-│   │   │   └── docs_auth.py       # Proteção da doc Swagger
-│   │   └── security.py            # JWT, OAuth2, HTTPBasic, etc.
+│   │   │   └── docs_auth.py        # Proteção da doc Swagger
+│   │   └── security.py             # JWT, OAuth2, HTTPBasic, etc.
 │   ├── 📁 crud                     # Camada de persistência
 │   │   ├── __init__.py
 │   │   └── scraping.py
@@ -64,11 +81,11 @@ Estrutura modular baseada em boas práticas de FastAPI e princípios de Clean Ar
 │   │   ├── __init__.py
 │   │   └── scraping.py
 │   ├── 📁 scraping                 # Módulos de scraping
-│   │   ├── bs4_scraper.py         # Serviço genérico
-│   │   ├── exportacao.py          # Customizações específicas
+│   │   ├── bs4_scraper.py          # Serviço genérico
+│   │   ├── exportacao.py           # Customizações específicas
 │   │   ├── importacao.py
 │   │   ├── __init__.py
-│   │   └── 📁 mok                  # Mocks HTML locais
+│   │   └── 📁 mocks                # Mocks HTML locais
 │   │       ├── opt_02.html
 │   │       ├── opt_03.html
 │   │       ├── opt_04.html
@@ -76,12 +93,14 @@ Estrutura modular baseada em boas práticas de FastAPI e princípios de Clean Ar
 │   │       └── opt_06.html
 │   └── 📁 tests                    # Testes automatizados
 │       └── __init__.py
+|       └── test_scraping.py
+|
 ├── 🚀 main.py                      # Ponto de entrada da aplicação
 ├── ⚙️ create_db.py                 # Script para criação inicial do banco
 ├── 🗃️ embrapa.db                   # Banco SQLite
 ├── 📄 poetry.lock                  # Lockfile de dependências
 ├── 📄 pyproject.toml               # Configuração do projeto (Poetry)
-├── 📄 requirements.txt            # Alternativa ao Poetry
+├── 📄 requirements.txt             # Alternativa ao Poetry
 ├── 📄 README.md                    # Documentação do projeto
 ```
 ---
@@ -103,17 +122,102 @@ Autenticação via **HTTPBasic** foi implementada (FASE 1) como proteção opcio
 ---
 
 
-## 🌍 Variáveis de Ambiente (.env)
-```bash 
-DATABASE_URL=sqlite:///./app.db
-SECRET_KEY=supersecret
-```
----
-
 ## 🧪 Testes
-```bash 
-WP pytest
+
+#### ✅ Como executar os testes
+
+Execute na raiz do projeto:
+
+```bash
+PYTHONPATH=. pytest app/tests -v
 ```
+
+Ou, alternativamente:
+
+```bash
+python -m pytest app/tests -v
+```
+
+
+
+#### ✅ Pré-requisitos
+
+- Dependências instaladas (`poetry install` ou `pip install -r requirements.txt`)
+- Estar na raiz do projeto (`/fase1` ou similar)
+- Ter os arquivos de mock HTML na pasta:
+
+```
+app/scraping/mocks/
+├── opt_02.html
+├── opt_03.html
+├── opt_04.html
+├── opt_05.html
+└── opt_06.html
+```
+
+
+
+#### ✅ O que é testado
+
+- 🔗 **`build_embrapa_url`** — Construção correta das URLs da Embrapa.
+- 🌐 **`fetch_page_content`** — Download de conteúdo HTML, com tratamento de falhas simuladas (timeouts, erros de conexão, indisponibilidade).
+- 📄 **`parse_table`** e **`parse_import_export_table`** — Parsing de HTML para JSON estruturado.
+- 🔥 **`scrape_embrapa`** — Scraping completo, verificando se dados existem, salvamento e resposta formatada.
+- ⚠️ **Exceções** — Tratamento de erros como `ExternalServiceUnavailableException` e `EmbrapaDataNotFoundException`.
+
+
+
+#### 🚩 Observações importantes
+
+Se ocorrer o erro:
+
+```plaintext
+ModuleNotFoundError: No module named 'app'
+```
+
+Garanta que você está executando com o parâmetro:
+
+```bash
+PYTHONPATH=. pytest app/tests
+```
+
+Ou usando o modo módulo:
+
+```bash
+python -m pytest app/tests
+```
+
+Isso é necessário porque o Python precisa reconhecer o diretório `app/` como parte do caminho de importação.
+
+
+
+#### 🧠 Organização dos testes
+
+```
+app/tests/
+└── test_scraping.py
+```
+
+
+
+#### 🏆 Exemplo de saída esperada
+
+```plaintext
+================================= test session starts ===============================
+collected 12 items
+
+app/tests/test_scraping.py ............                                       [100%]
+
+============================== 12 passed in 0.42s ==============================
+```
+
+
+
+#### 🚩 Dicas profissionais
+
+- ✅ Recomenda-se rodar os testes sempre antes de qualquer commit.
+- ✅ Para automação, considere incluir no pipeline de CI/CD (`GitHub Actions`, `GitLab CI`, `Render`, etc.).
+
 ---
 
 ## 🔁 Fluxo de Funcionamento
