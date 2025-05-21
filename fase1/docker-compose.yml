@@ -1,0 +1,15 @@
+services:
+  api:
+    image: embrapa_api:latest
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: embrapa_api
+  
+    ports:
+      - "8000:8000"
+    env_file:
+      - .env
+    volumes:
+      - ./db_data:/app/db_data
+    restart: unless-stopped

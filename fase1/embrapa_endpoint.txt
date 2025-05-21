@@ -1,0 +1,69 @@
+Informações principais
+    Base URL: http://vitibrasil.cnpuv.embrapa.br/index.php
+    Parâmetro obrigatório: opcao
+    Opções disponíveis (opcao):
+        opt_02 → Produção
+        opt_03 → Processamento
+        opt_04 → Comercialização
+        opt_05 → Importação
+        opt_06 → Exportação
+
+Detalhamento por opção:
+
+Produção (opcao=opt_02):
+    Ano: 1976 até 2023 (opcional)
+    Subopção: Não se aplica
+    Exemplo de URL:
+    http://vitibrasil.cnpuv.embrapa.br/index.php?ano=1976&opcao=opt_02
+
+Processamento (opcao=opt_03):
+    Ano: 1976 até 2023 (opcional)
+    Subopção: Sim, necessária
+        Intervalo de subopções: subopt_01 até subopt_04
+        Rótulos:
+            subopt_01: Viníferas
+            subopt_02: Americanas e híbridas
+            subopt_03: Uvas de mesa
+            subopt_04: Sem classificação
+
+        Subopção padrão: subopt_01
+
+    Exemplo de URL:
+    http://vitibrasil.cnpuv.embrapa.br/index.php?ano=1976&opcao=opt_03&subopcao=subopt_01
+
+Comercialização (opcao=opt_04):
+    Ano: 1976 até 2023 (opcional)
+    Subopção: Não se aplica
+
+    Exemplo de URL:
+    http://vitibrasil.cnpuv.embrapa.br/index.php?opcao=opt_04
+
+Importação (opcao=opt_05):
+    Ano: 1976 até 2023 (opcional)
+    Subopção: Sim, necessária
+        Intervalo de subopções: subopt_01 até subopt_05
+        Rótulos:
+            subopt_01: Vinhos de mesa
+            subopt_02: Espumantes
+            subopt_03: Uvas frescas
+            subopt_04: Uvas passas
+            subopt_05: Suco de uva
+        Subopção padrão: subopt_01
+
+    Exemplo de URL:
+    http://vitibrasil.cnpuv.embrapa.br/index.php?ano=1976&opcao=opt_05&subopcao=subopt_01
+
+
+Exportação (opcao=opt_06):
+    Ano: 1976 até 2023 (opcional)
+    Subopção: Sim, necessária
+        Intervalo de subopções: subopt_01 até subopt_04
+        Rótulos:
+            subopt_01: Vinhos de mesa
+            subopt_02: Espumantes
+            subopt_03: Uvas frescas
+            subopt_04: Suco de uva
+        Subopção padrão: subopt_01
+
+    Exemplo de URL:
+    http://vitibrasil.cnpuv.embrapa.br/index.php?ano=1976&opcao=opt_06&subopcao=subopt_01
