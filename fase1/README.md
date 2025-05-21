@@ -1,4 +1,17 @@
-# Projeto: API Embrapa Uva e Vinho - POS Tech MLE
+# 🚀 API Embrapa Uva e Vinho - POS Tech MLE
+
+API para coleta estruturada de dados públicos da **Embrapa Uva e Vinho**, nas abas:
+
+- 🍇 Produção
+- 🍷 Processamento
+- 💰 Comercialização
+- 🌎 Importação
+- 🚢 Exportação
+
+
+Esses dados servirão de base para análise e construção de modelos de **Machine Learning** no futuro.
+
+---
 
 ## 🔗 Sumário
 - [📝 Descrição](#-descrição)
@@ -15,17 +28,6 @@
 - [🔗 Rotas](#-rotas-disponíveis)
 - [📄 Licença](#-licença)
 
-
-
-## 📝 Descrição
-API para coleta estruturada de dados públicos da Embrapa, focando nas abas de:
-- Produção
-- Processamento
-- Comercialização
-- Importação
-- Exportação
-
-Esses dados servirão de base para análise e construção de modelos de **Machine Learning** no futuro.
 
 ---
 
@@ -104,14 +106,44 @@ Estrutura modular baseada em boas práticas de FastAPI e princípios de Clean Ar
 ├── 📄 README.md                    # Documentação do projeto
 ```
 ---
-
 ## ⚙️ Instalação e Execução
+### ✅ **Opção 1: Rodar localmente com Poetry**
+
 ```bash
 git clone https://github.com/seu-usuario/seu-repo.git
 cd seu-repo
 poetry install
 poetry shell
 uvicorn app.main:app --reload
+```
+
+### ✅ **Opção 2: Rodar com Docker**
+
+```bash
+git clone https://github.com/seu-usuario/seu-repo.git
+cd seu-repo
+docker compose up -d --build
+```
+Depois, acesse:
+- ➡️ http://localhost:8000 → API funcionando.
+- ➡️ http://localhost:8000/docs → Swagger UI.
+
+#### ✅ **Para parar:**
+```bash
+docker compose down
+```
+#### ✅ **Para parar:**
+```bash
+docker compose down
+```
+#### ✅ **Outros comandos úteis::**
+- Ver logs:
+```bash
+docker compose logs -f api
+```
+- Limpar imagens/parar containers:
+```bash
+docker system prune -af --volumes
 ```
 ---
 
