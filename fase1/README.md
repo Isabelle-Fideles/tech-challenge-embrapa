@@ -17,6 +17,7 @@ Esses dados servirão de base para análise e construção de modelos de **Machi
 - [📝 Descrição](#-descrição)
 - [🛠️ Tecnologias](#-tecnologias)
 - [🗂️ Estrutura do Projeto](#-estrutura-do-projeto)
+- [📈 Diagramas do Projeto](#-diagramas-do-projeto)
 - [⚙️ Instalação e Execução](#-instalação-e-execução)
 - [🔐 Autenticação](#-autenticação)
 - [🧪 Testes](#-testes)
@@ -105,6 +106,204 @@ Estrutura modular baseada em boas práticas de FastAPI e princípios de Clean Ar
 ├── 📄 requirements.txt             # Alternativa ao Poetry
 ├── 📄 README.md                    # Documentação do projeto
 ```
+---
+## 📈 Diagramas do Projeto
+Esta seção reúne os principais diagramas do projeto — **sequência**, **componentes**, **fluxos de alto nível**, **fluxos detalhados** e **rotas** — que ilustram a arquitetura, funcionamento interno e endpoints da API Embrapa Uva e Vinho.  
+Esses diagramas são essenciais para onboarding de novos desenvolvedores, manutenção evolutiva e consulta técnica rápida.
+
+
+> ⚠️ Observação: Se você tiver problemas para visualizar os diagramas em Mermaid no GitHub, acesse a versão em imagem (PNG) disponível nos links abaixo de cada diagrama.  
+> Usuários do VS Code com suporte ao Mermaid podem visualizar normalmente em markdown.
+
+
+### 🔹 1. **Diagrama de sequência**
+```mermaid
+sequenceDiagram
+    participant Cliente
+    participant API
+    participant Schemas
+    participant Core
+    participant CRUD
+    participant Scraping
+    participant Models
+    participant DB
+
+    Note over Cliente,API: 1. Cliente faz requisição para scraping
+
+    Cliente->>API: Requisição HTTP (GET /api/v1/scraping)
+    API->>Core: Valida autenticação/configuração (opcional)
+    API->>Schemas: Valida entrada (Pydantic)
+
+    Note right of API: 2. API checa se dados já existem (cache)
+    alt Dados já em cache?
+        API->>CRUD: Consulta cache
+        CRUD->>Models: Query (scraping cache)
+        Models->>DB: Consulta banco
+        DB-->>Models: Dados do cache
+        Models-->>CRUD: Retorna dados
+        CRUD-->>API: Retorna dados
+        Note right of API: 3a. Se sim, API retorna dados imediatamente
+        API-->>Cliente: Resposta (dados do cache)
+    else Não existe cache
+        Note right of API: 3b. Se não, dispara serviço de scraping
+        API->>Scraping: Chama serviço de scraping
+        Scraping->>Site Embrapa: Coleta dados
+        Site Embrapa-->>Scraping: Dados HTML
+        Scraping->>CRUD: Persiste dados processados
+        CRUD->>Models: Insert/Update
+        Models->>DB: Grava no banco
+        CRUD-->>API: Retorna dados processados
+        API-->>Cliente: Resposta (dados atualizados)
+    end
+
+    Note over Cliente,API: 4. Cliente recebe os dados (cache ou novo scraping)
+
+```
+[🖼️ Ver diagrama em PNG](app/docs/diagramas/sequencia.png)
+
+### 🔹 2. **Diagrama de componentes**
+```mermaid
+flowchart TD
+    subgraph API Embrapa
+        MainPy[main.py]
+        Alembic[Migrations alembic/]
+        API[API api/v1/]
+        Docs[Documentação api/v1/docs/]
+        Endpoints[Endpoints api/v1/endpoints/]
+        Core[Core Config e Segurança]
+        Middleware[Middleware docs_auth.py]
+        CRUD[CRUD crud/]
+        DB[DB Sessão e Base]
+        Models[Models models/]
+        Schemas[Schemas schemas/]
+        ScrapingService[Scraping Services scraping/]
+        Mocks[Mocks HTML scraping/mocks/]
+        Tests[Tests tests/]
+        Cliente[Cliente]
+        DBStorage[(Banco de Dados)]
+    end
+
+
+    Cliente -->|Requisição| API
+    MainPy -->|Entrypoint| API
+    API -->|Inclui| Docs
+    API -->|Usa| Endpoints
+    API -->|Usa config/segurança| Core
+    Core -->|Middleware| Middleware
+    API -->|Usa| CRUD
+    API -->|Usa| Schemas
+    API -->|Usa| Models
+    API -->|Dispara| ScrapingService
+    ScrapingService -->|Usa| Mocks
+    CRUD -->|Persiste| DB
+    CRUD -->|Usa| Models
+    Models -->|Definem ORM| DB
+    DB -->|Session/engine| DBStorage
+    Tests -->|Testa| API
+    Tests -->|Testa| ScrapingService
+    Alembic -->|Migra| DBStorage
+```
+
+[🖼️ Ver diagrama em PNG](app/docs/diagramas/componentes.png)
+
+### 🔹 3. **Diagrama fluxos de alto nível**
+```mermaid
+flowchart TD
+    Start([Início])
+    Req[Receber requisição do cliente]
+    Auth[Autenticação válida?]
+    Cache{Dados em cache?}
+    Scraping[Executa scraping]
+    Salva[Salva resultado no banco]
+    Responde[Envia resposta ao cliente]
+    Fim([Fim])
+
+    Start --> Req --> Auth
+    Auth -- Não --> Responde --> Fim
+    Auth -- Sim --> Cache
+    Cache -- Sim --> Responde --> Fim
+    Cache -- Não --> Scraping --> Salva --> Responde --> Fim
+```
+
+[🖼️ Ver diagrama em PNG](app/docs/diagramas/fluxos_auto_nivel.png)
+
+### 🔹 4. **Diagrama fluxos detalhados**
+```mermaid
+flowchart TD
+    Cliente -->|1 Requisição HTTP| APIv1
+    APIv1 -->|2 Validação e parsing| Schemas
+    APIv1 -->|3 Autenticação e segurança| Core
+    APIv1 -->|4 Encaminha para endpoint| Endpoints
+    Endpoints -->|5 Chama camada de persistência| CRUD
+    CRUD -->|6 Usa modelos ORM| Models
+    CRUD -->|7 Persiste ou busca dados| DB
+    APIv1 -->|8 Retorna resposta| Cliente
+    APIv1 -->|9 Solicita scraping| ScrapingService
+    ScrapingService -->|10 Realiza scraping e retorna dados| CRUD
+    Alembic -. |11 Migrations| .-> DB
+
+    subgraph API
+        APIv1
+        Endpoints
+    end
+
+    subgraph Banco
+        DB
+        Alembic
+    end
+
+    subgraph Dados
+        Models
+        Schemas
+        CRUD
+    end
+
+    subgraph Servicos
+        ScrapingService
+        Core
+    end
+```
+
+[🖼️ Ver diagrama em PNG](app/docs/diagramas/fluxos_detalhe.png)
+
+### 🔹 5. **Diagrama de rotas**
+```mermaid
+flowchart TD
+    subgraph API Rotas
+        Cliente -->|POST /producao| Producao
+        Producao -->|Consulta/Salva| DB
+        Producao -->|Executa scraping| Scraping
+
+        Cliente -->|POST /processamento| Processamento
+        Processamento -->|Consulta/Salva| DB
+        Processamento -->|Executa scraping| Scraping
+
+        Cliente -->|POST /comercializacao| Comercializacao
+        Comercializacao -->|Consulta/Salva| DB
+        Comercializacao -->|Executa scraping| Scraping
+
+        Cliente -->|POST /importacao| Importacao
+        Importacao -->|Consulta/Salva| DB
+        Importacao -->|Executa scraping| Scraping
+
+        Cliente -->|POST /exportacao| Exportacao
+        Exportacao -->|Consulta/Salva| DB
+        Exportacao -->|Executa scraping| Scraping
+
+        Scraping -->|Retorna dados| DB
+
+    
+        Producao
+        Processamento
+        Comercializacao
+        Importacao
+        Exportacao
+    end
+```
+
+[🖼️ Ver diagrama em PNG](app/docs/diagramas/rotas.png)
+
+
 ---
 ## ⚙️ Instalação e Execução
 ### ✅ **Opção 1: Rodar localmente com Poetry**

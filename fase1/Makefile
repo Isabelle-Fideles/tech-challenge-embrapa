@@ -5,16 +5,16 @@ COMPOSE=docker-compose.yml
 # Comandos principais
 # ---------------------------
 up:
-	docker-compose -f $(COMPOSE) up --build
+	docker compose -f $(COMPOSE) up --build
 
 up-detach:
-	docker-compose -f $(COMPOSE) up --build -d
+	docker compose -f $(COMPOSE) up --build -d
 
 down:
-	docker-compose -f $(COMPOSE) down
+	docker compose -f $(COMPOSE) down
 
 logs:
-	docker-compose -f $(COMPOSE) logs -f
+	docker compose -f $(COMPOSE) logs -f
 
 # ---------------------------
 # Limpeza

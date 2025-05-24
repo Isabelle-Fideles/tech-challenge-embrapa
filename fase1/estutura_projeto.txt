@@ -1,86 +1,47 @@
-Estrutura de Diretórios Profissional para FastAPI
-
-app/
-├── api/               # Camada de rotas/endpoints
-│   ├── v1/            # Versão da API
-│   │   ├── endpoints/ # Arquivos de rotas (divididos por recurso: auth, users, scraping, etc.)
-│   │   │   ├── auth.py
-│   │   │   ├── user.py
-│   │   │   ├── scraping.py
+📦 API Embrapa - POS Tech MLE
+├── 📁 app
+│   ├── 📁 alembic                 # Migrations do banco de dados
 │   │   └── __init__.py
-│   └── __init__.py
-├── core/              # Configurações centrais (segurança, settings, autenticação)
-│   ├── config.py      # Carregar variáveis de ambiente (pydantic BaseSettings)
-│   ├── security.py    # Lógica de OAuth2, JWT, senhas
-│   └── __init__.py
-├── models/            # Modelos ORM (SQLAlchemy)
-│   ├── user.py
-│   ├── scraping.py
-│   └── __init__.py
-├── schemas/           # Modelos Pydantic (validação e serialização)
-│   ├── user.py
-│   ├── scraping.py
-│   └── __init__.py
-├── crud/              # Operações de banco de dados (create, read, update, delete)
-│   ├── user.py
-│   ├── scraping.py
-│   └── __init__.py
-├── scraping/          # Scripts ou serviços de scraping
-│   ├── selenium_scraper.py
-│   ├── bs4_scraper.py
-│   └── __init__.py
-├── db/                # Banco de dados (sessões, engine, migrations)
-│   ├── base.py        # Base do SQLAlchemy
-│   ├── session.py     # Sessão do banco
-│   └── __init__.py
-├── alembic/           # Diretório do Alembic (migrations)
-│   ├── versions/
-│   ├── env.py
-│   └── README
-├── tests/             # Testes unitários e de integração
-│   ├── test_user.py
-│   ├── test_scraping.py
-│   └── __init__.py
-└── main.py            # Ponto de entrada (FastAPI app instanciado aqui)
-
-.env                   # Variáveis de ambiente (não subir no git!)
-requirements.txt       # Dependências do projeto
-README.md              # Documentação inicial
-
-
-Breve explicação de cada parte:
-
-api/: Onde ficam as rotas HTTP organizadas por versão e recurso.
-
-core/: Configurações, autenticação, segurança, utilitários centrais.
-
-models/: Representação do banco no SQLAlchemy.
-
-schemas/: Modelos para validar entradas e saídas (Pydantic).
-
-crud/: Lógica de banco (consultas, inserções, atualizações).
-
-scraping/: Serviços separados para scraping (BeautifulSoup, Selenium).
-
-db/: Sessão com o banco, engine SQLAlchemy, integração com Alembic.
-
-alembic/: Scripts de migração de banco.
-
-tests/: Testes unitários (pytest geralmente usado).
-
-main.py: Inicializa o FastAPI e carrega todas as rotas e configs.
-
-
-Algumas práticas complementares:
-
-Separar bem modelagem (ORM) de entrada/saída (Pydantic).
-
-Fazer logging adequado em core/logging.py.
-
-Manter segurança centralizada (core/security.py para OAuth2, JWT, senhas).
-
-Carregar configurações com Pydantic BaseSettings no core/config.py.
-
-Fazer testes de scraping separados dos testes de API.
-
-Usar comandos alembic para gerar e aplicar migrações (via scripts de versionamento).
+│   ├── 📁 api                     # Camada de API
+│   │   └── 📁 v1                  # Versão da API
+│   │       ├── api.py             # Roteador principal
+│   │       ├── 📁 docs            # Documentação e responses
+│   │       │   ├── embrapa.py
+│   │       │   └── responses.py
+│   │       ├── 📁 endpoints       # Endpoints da API
+│   │       │   ├── __init__.py
+│   │       │   └── scraping.py
+│   │       └── __init__.py
+│   ├── 📁 core                    # Configurações e segurança
+│   │   ├── exceptions.py
+│   │   ├── __init__.py
+│   │   ├── 📁 middleware
+│   │   │   └── docs_auth.py        # Proteção da doc Swagger
+│   │   └── security.py             # JWT, OAuth2, HTTPBasic, etc.
+│   ├── 📁 crud                     # Camada de persistência
+│   │   ├── __init__.py
+│   │   └── scraping.py
+│   ├── 📁 db                       # Sessão e base SQLAlchemy
+│   │   ├── base.py
+│   │   ├── __init__.py
+│   │   └── session.py
+│   ├── 📁 models                   # Modelos ORM
+│   │   ├── __init__.py
+│   │   └── scraping.py
+│   ├── 📁 schemas                  # Modelos Pydantic
+│   │   ├── __init__.py
+│   │   └── scraping.py
+│   ├── 📁 scraping                 # Módulos de scraping
+│   │   ├── bs4_scraper.py          # Serviço genérico
+│   │   ├── exportacao.py           # Customizações específicas
+│   │   ├── importacao.py
+│   │   ├── __init__.py
+│   │   └── 📁 mocks                # Mocks HTML locais
+│   │       ├── opt_02.html
+│   │       ├── opt_03.html
+│   │       ├── opt_04.html
+│   │       ├── opt_05.html
+│   │       └── opt_06.html
+│   └── 📁 tests                    # Testes automatizados
+│       └── __init__.py
+|       └── test_scraping.py
