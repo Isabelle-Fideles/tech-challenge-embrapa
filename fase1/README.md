@@ -115,8 +115,28 @@ Esses diagramas são essenciais para onboarding de novos desenvolvedores, manute
 > ⚠️ Observação: Se você tiver problemas para visualizar os diagramas em Mermaid no GitHub, acesse a versão em imagem (PNG) disponível nos links abaixo de cada diagrama.  
 > Usuários do VS Code com suporte ao Mermaid podem visualizar normalmente em markdown.
 
+### 🔹 1. **Diagrama fluxos de alto nível**
+```mermaid
+flowchart TD
+    Start([Início])
+    Req[Receber requisição do cliente]
+    Auth[Autenticação válida?]
+    Cache{Dados em cache?}
+    Scraping[Executa scraping]
+    Salva[Salva resultado no banco]
+    Responde[Envia resposta ao cliente]
+    Fim([Fim])
 
-### 🔹 1. **Diagrama de sequência**
+    Start --> Req --> Auth
+    Auth -- Não --> Responde --> Fim
+    Auth -- Sim --> Cache
+    Cache -- Sim --> Responde --> Fim
+    Cache -- Não --> Scraping --> Salva --> Responde --> Fim
+```
+
+[🖼️ Ver diagrama em PNG](app/docs/diagramas/fluxos_auto_nivel.png)
+
+### 🔹 2. **Diagrama de sequência**
 ```mermaid
 sequenceDiagram
     participant Cliente
@@ -161,7 +181,7 @@ sequenceDiagram
 ```
 [🖼️ Ver diagrama em PNG](app/docs/diagramas/sequencia.png)
 
-### 🔹 2. **Diagrama de componentes**
+### 🔹 3. **Diagrama de componentes**
 ```mermaid
 flowchart TD
     subgraph API Embrapa
@@ -206,26 +226,6 @@ flowchart TD
 
 [🖼️ Ver diagrama em PNG](app/docs/diagramas/componentes.png)
 
-### 🔹 3. **Diagrama fluxos de alto nível**
-```mermaid
-flowchart TD
-    Start([Início])
-    Req[Receber requisição do cliente]
-    Auth[Autenticação válida?]
-    Cache{Dados em cache?}
-    Scraping[Executa scraping]
-    Salva[Salva resultado no banco]
-    Responde[Envia resposta ao cliente]
-    Fim([Fim])
-
-    Start --> Req --> Auth
-    Auth -- Não --> Responde --> Fim
-    Auth -- Sim --> Cache
-    Cache -- Sim --> Responde --> Fim
-    Cache -- Não --> Scraping --> Salva --> Responde --> Fim
-```
-
-[🖼️ Ver diagrama em PNG](app/docs/diagramas/fluxos_auto_nivel.png)
 
 ### 🔹 4. **Diagrama fluxos detalhados**
 ```mermaid
@@ -305,6 +305,7 @@ flowchart TD
 
 
 ---
+
 ## ⚙️ Instalação e Execução
 ### ✅ **Opção 1: Rodar localmente com Poetry**
 
