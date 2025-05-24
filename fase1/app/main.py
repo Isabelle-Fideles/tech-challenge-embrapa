@@ -4,7 +4,7 @@ from app.api.v1.api import api_router
 
 
 app = FastAPI(
-    title="API Embrapa - POS Tech MLE - Fase 1",
+    title="API Embrapa - POS Tech MLE - Fase 1.",
     description="""
 **A API Embrapa Vitibrasil** disponibiliza dados públicos sobre a cadeia produtiva da vitivinicultura no Brasil, com foco especial no Estado do Rio Grande do Sul — responsável por mais de 90% da produção nacional.
 
