@@ -1,11 +1,15 @@
+import os
 import requests
 from bs4 import BeautifulSoup
 from typing import Any, Optional, Dict
 from functools import lru_cache
 from app.core.exceptions import EmbrapaDataNotFoundException, ExternalServiceUnavailableException
+from dotenv import load_dotenv
 
-BASE_URL = "http://vitibrasil.cnpuv.embrapa.br/index.php"
+# Carrega variáveis do .env
+load_dotenv()
 
+EMBRAPA_BASE_URL = os.getenv("EMBRAPA_BASE_URL", "")
 
 def build_embrapa_url(opcao: str, ano: Optional[int] = None, subopcao: Optional[str] = None) -> str:
     params = f"?opcao={opcao}"
@@ -13,7 +17,7 @@ def build_embrapa_url(opcao: str, ano: Optional[int] = None, subopcao: Optional[
         params += f"&ano={ano}"
     if subopcao:
         params += f"&subopcao={subopcao}"
-    return BASE_URL + params
+    return EMBRAPA_BASE_URL + params
 
 def fetch_page_content(url: str) -> str:
     try:
@@ -67,7 +71,7 @@ def parse_table(html_content: str) -> Dict[str, Any]:
         "categorias": grouped_data,
         "total_litros": total_geral
     }
-    
+
 def parse_import_export_table(html_content: str) -> Dict[str, Any]:
     soup = BeautifulSoup(html_content, "html.parser")
     table = soup.find("table", class_="tb_base tb_dados")

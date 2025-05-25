@@ -1,7 +1,30 @@
 from fastapi import FastAPI,Request, Response
 from app.api.v1.api import api_router
+import sys
+import os
+from dotenv import load_dotenv
 # from app.core.middleware.docs_auth import DocsAuthMiddleware
 
+
+# Carrega variáveis do .env
+load_dotenv()
+
+# Lista de variáveis obrigatórias do projeto:
+REQUIRED_ENV_VARS = [
+    "EMBRAPA_BASE_URL",
+    "DATABASE_URL",
+    "DOCS_USER",
+    "DOCS_PASSWORD",
+]
+
+missing_vars = [var for var in REQUIRED_ENV_VARS if not os.getenv(var)]
+
+if missing_vars:
+    print("\n❌ ERRO DE CONFIGURAÇÃO:\n")
+    print(f"As seguintes variáveis obrigatórias não foram definidas no ambiente ou no arquivo .env: {', '.join(missing_vars)}")
+    print("Por favor, configure todas as variáveis obrigatórias antes de iniciar a aplicação.\n")
+    sys.exit(1)
+    
 
 app = FastAPI(
     title="API Embrapa - POS Tech MLE - Fase 1",
