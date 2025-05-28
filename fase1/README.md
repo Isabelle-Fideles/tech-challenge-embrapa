@@ -20,9 +20,9 @@ Esses dados servirão de base para análise e construção de modelos de **Machi
 
 ---
 
-## 📝 O Problema que Resolvem
+## 📝 Como a API Resolve o Problema de Acesso aos Dados da Vitibrasil
 
-Atualmente, os dados públicos sobre produção, processamento, comercialização, importação e exportação de uvas e vinhos no Brasil estão disponíveis apenas no site Vitibrasil, mantido pela Embrapa Uva e Vinho.
+Atualmente, os dados públicos sobre `produção`, `processamento`, `comercialização`, `importação` e `exportação` de uvas e vinhos estão disponíveis no site Vitibrasil, mantido pela Embrapa Uva e Vinho.
 **Porém, o site apresenta limitações importantes:**
 - Não existe API oficial para consulta automática ou integração.
 - O acesso é apenas manual, via navegação web e download de arquivos.
@@ -133,6 +133,7 @@ Estrutura modular baseada em boas práticas de FastAPI e princípios de Clean Ar
 ├── 📄 README.md                    # Documentação do projeto
 ```
 ---
+
 ## 📈 Diagramas do Projeto
 Esta seção reúne os principais diagramas do projeto — **arquitetura macro**, **sequência**, **componentes**, **fluxos de alto nível**, **fluxos detalhados** e **rotas** — que ilustram a arquitetura, funcionamento interno e endpoints da API Embrapa Uva e Vinho.  
 Esses diagramas são essenciais para onboarding de novos desenvolvedores, manutenção evolutiva e consulta técnica rápida.
@@ -145,9 +146,10 @@ Esses diagramas são essenciais para onboarding de novos desenvolvedores, manute
 ### 🔹 1. **Diagrama de arquitetura macro**
 ```mermaid
 flowchart LR
-    A[Embrapa Fonte de Dados] -->|Web Scraping| B[API Embrapa FastAPI]
-    B -->|Fallback/Cache| C[(Banco de Dados / CSV)]
-    B --> D[Dashboards / Aplicações / ML]
+    E[Cliente Externo / Sistema Integrado] <--> |REST API| B
+    A[Embrapa Fonte de Dados] <--> |Web Scraping| B[API Embrapa]
+    B <--> |Fallback/Cache| C[(Banco de Dados / CSV)]
+    B <--> |Aplicações| D[Dashboards/ ML]
 ```
 [🖼️ Ver diagrama em PNG](app/docs/diagramas/arquitetura_macro.png)
 
@@ -355,6 +357,7 @@ flowchart TD
 ---
 
 ## ⚙️ Instalação e Execução
+
 ### ✅ **Opção 1: Rodar localmente com Poetry**
 
 ```bash
@@ -377,14 +380,13 @@ Depois, acesse:
 - ➡️ http://localhost:8000/docs → Swagger UI.
 
 #### ✅ **Para parar:**
+
 ```bash
 docker compose down
 ```
-#### ✅ **Para parar:**
-```bash
-docker compose down
-```
+
 #### ✅ **Outros comandos úteis::**
+
 - Ver logs:
 ```bash
 docker compose logs -f api
@@ -512,15 +514,6 @@ app/tests/test_scraping.py ............                                       [1
 
 ---
 
-## 🔁 Fluxo de Funcionamento
-1. Usuário envia uma requisição POST para /api/v1/embrapa/*
-2. A rota é tratada por um endpoint na API
-3. Um scraper realiza a busca dos dados na Embrapa via BeautifulSoup
-4. Os dados são parseados e cacheados em banco local (SQLite)
-5. A resposta é formatada em JSON conforme Schema Pydantic
-
----
-
 ## ⭐ Diferenciais e Boas Práticas
 
 - Fallback automático para cache local caso o site da Embrapa esteja fora do ar, garantindo alta disponibilidade da API.
@@ -554,7 +547,6 @@ Os dados coletados poderão ser utilizados para:
 - **Classificação de tipos de vinho por perfil de exportação**
 - **Análise de tendências na comercialização e importação**
 
-
 ---
 
 ## 🚀 Plano de Deploy (MVP)
@@ -566,6 +558,7 @@ O projeto pode ser facilmente publicado em:
 - **Docker + Uvicorn em VPS (Ex: EC2)**
 
 ---
+
 ## 🔗 Rotas disponíveis
 
 - /api/v1/embrapa/producao
