@@ -16,7 +16,7 @@ Esses dados servirão de base para análise e construção de modelos de **Machi
 
 - [API em produção (Swagger UI)](https://tech-challenge-embrapa-1.onrender.com/docs#/)
 - [Repositório no GitHub](https://github.com/Isabelle-Fideles/tech-challenge-embrapa/tree/main/fase1)
-- [Vídeo de apresentação](#) <!-- Adicionar quando disponível -->
+- [Vídeo de apresentação](https://www.youtube.com/watch?v=GpOifVpCjZE) <!-- Adicionar quando disponível -->
 
 ---
 
